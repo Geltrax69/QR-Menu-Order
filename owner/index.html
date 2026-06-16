@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Owner · RestaurantOS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+  <link rel="stylesheet" href="/assets/css/panel.css" />
+</head>
+<body>
+  <!-- LOGIN -->
+  <div id="loginView" class="login-shell" hidden>
+    <div class="card login-card">
+      <div class="mark-lg"><i class="ph ph-storefront"></i></div>
+      <h1>Owner sign in</h1>
+      <p class="hint">Manage your restaurant, menu &amp; tables</p>
+      <form id="loginForm">
+        <div class="field"><label>Email</label><input id="email" type="email" autocomplete="username" placeholder="you@restaurant.com" required /></div>
+        <div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password" placeholder="••••••••" required /></div>
+        <div class="err" id="loginErr"></div>
+        <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+      <div class="demo-hint">Demo owner · <b>owner@tandoori.app</b> / <b>owner123</b><br/>Use the email &amp; password your admin gave you.</div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashView" hidden>
+    <div class="topnav">
+      <div class="brand"><span class="mark"><i class="ph ph-storefront"></i></span> <span id="navName">RestaurantOS</span> <small>· Owner</small></div>
+      <div class="who">
+        <a class="btn btn-sm" id="viewSite" href="#" target="_blank"><i class="ph ph-eye"></i> View customer site</a>
+        <button class="btn btn-sm" id="logoutBtn"><i class="ph ph-sign-out"></i> Log out</button>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="page-title">Your restaurant</div>
+      <div class="page-sub" id="urlSub"></div>
+
+      <!-- Profile -->
+      <div class="card">
+        <div class="section-title" style="margin-top:0"><i class="ph ph-identification-card"></i> Profile</div>
+        <div class="row">
+          <div class="field"><label>Restaurant name</label><input id="rName" /></div>
+          <div class="field"><label>Handle (shown like @handle)</label><input id="rHandle" /></div>
+        </div>
+        <div class="field"><label>Short bio / tagline</label><input id="rBio" maxlength="160" /></div>
+        <div class="row">
+          <div class="field" style="flex:2"><label>Logo image URL</label><input id="rLogo" placeholder="https://…" /></div>
+          <div class="field" style="flex:1"><label>Number of tables</label><input id="rTables" type="number" min="1" max="500" /></div>
+        </div>
+        <img class="preview-img" id="logoPreview" alt="logo preview" style="max-width:120px;aspect-ratio:1;border-radius:16px" />
+
+        <div class="section-title"><i class="ph ph-megaphone"></i> Home promo banner <span class="badge muted">optional</span></div>
+        <div class="row">
+          <div class="field"><label>Tag</label><input id="pTag" placeholder="Weekend offer" /></div>
+          <div class="field" style="flex:2"><label>Title</label><input id="pTitle" placeholder="Buy 2 pizzas, get a drink free" /></div>
+        </div>
+        <div class="field"><label>Banner image URL</label><input id="pImage" placeholder="https://…" /></div>
+        <button class="btn btn-primary" id="saveProfile"><i class="ph ph-floppy-disk"></i> Save profile</button>
+        <span class="err" id="profileErr" style="display:inline-block;margin-left:10px"></span>
+      </div>
+
+      <!-- Categories -->
+      <div class="section-title"><i class="ph ph-squares-four"></i> Categories</div>
+      <div class="card">
+        <div class="row" style="align-items:flex-end">
+          <div class="field" style="margin-bottom:0"><label>Add a category</label><input id="catInput" placeholder="e.g. Desserts" /></div>
+          <button class="btn btn-dark" id="addCat" style="flex:0 0 auto"><i class="ph ph-plus"></i> Add</button>
+        </div>
+        <div class="pill-toggle" id="catList" style="margin-top:16px"></div>
+      </div>
+
+      <!-- Menu -->
+      <div class="section-title" style="display:flex;justify-content:space-between">
+        <span><i class="ph ph-bowl-food"></i> Menu items <span id="itemCount" class="badge muted"></span></span>
+        <button class="btn btn-primary btn-sm" id="addItem"><i class="ph ph-plus"></i> Add item</button>
+      </div>
+      <div class="grid-items" id="menuGrid"></div>
+    </div>
+  </div>
+
+  <!-- ITEM MODAL -->
+  <div class="scrim" id="itemScrim">
+    <div class="modal">
+      <div class="modal-head"><h3 id="modalTitle">Add menu item</h3><button class="x" id="modalClose"><i class="ph ph-x"></i></button></div>
+      <div class="modal-body">
+        <input type="hidden" id="iId" />
+        <div class="field"><label>Dish name</label><input id="iName" placeholder="Butter Chicken" /></div>
+        <div class="field"><label>Description</label><textarea id="iDesc" rows="2" placeholder="Tandoor-charred chicken in a velvety tomato gravy…"></textarea></div>
+        <div class="row">
+          <div class="field"><label>Category</label><select id="iCat"></select></div>
+          <div class="field"><label>Price (₹)</label><input id="iPrice" type="number" min="0" /></div>
+          <div class="field"><label>Prep (min)</label><input id="iPrep" type="number" min="0" /></div>
+        </div>
+        <div class="field"><label>Image URL</label><input id="iImage" placeholder="https://…" /><img class="preview-img" id="iPreview" alt="preview" /></div>
+        <div class="row" style="align-items:center">
+          <label class="switch"><input type="checkbox" id="iVeg" /> Vegetarian</label>
+          <label class="switch"><input type="checkbox" id="iSpicy" /> Spicy</label>
+        </div>
+        <div class="field" style="margin-top:14px"><label>Availability</label>
+          <div class="pill-toggle" id="iAvail">
+            <button type="button" data-av="available" class="on">Available</button>
+            <button type="button" data-av="limited">Limited</button>
+            <button type="button" data-av="out">Out of stock</button>
+          </div>
+        </div>
+        <div class="field" style="margin-top:14px"><label>Badges</label>
+          <div class="pill-toggle" id="iBadges">
+            <button type="button" data-badge="bestseller">Bestseller</button>
+            <button type="button" data-badge="chef">Chef's Pick</button>
+            <button type="button" data-badge="popular">Popular</button>
+            <button type="button" data-badge="recommended">Recommended</button>
+          </div>
+        </div>
+        <div class="err" id="itemErr"></div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-danger" id="deleteItem" hidden><i class="ph ph-trash"></i> Delete</button>
+        <button class="btn" id="cancelItem">Cancel</button>
+        <button class="btn btn-primary" id="saveItem"><i class="ph ph-check"></i> Save item</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="/owner/owner.js"></script>
+</body>
+</html>

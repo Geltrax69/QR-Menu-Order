@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin · RestaurantOS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+  <link rel="stylesheet" href="/assets/css/panel.css" />
+</head>
+<body>
+  <!-- LOGIN -->
+  <div id="loginView" class="login-shell" hidden>
+    <div class="card login-card">
+      <div class="mark-lg"><i class="ph ph-shield-star"></i></div>
+      <h1>Admin sign in</h1>
+      <p class="hint">Manage restaurant owners and accounts</p>
+      <form id="loginForm">
+        <div class="field"><label>Email</label><input id="email" type="email" autocomplete="username" placeholder="admin@restaurantos.app" required /></div>
+        <div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password" placeholder="••••••••" required /></div>
+        <div class="err" id="loginErr"></div>
+        <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+      <div class="demo-hint">Demo admin · <b>admin@restaurantos.app</b> / <b>admin123</b></div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashView" hidden>
+    <div class="topnav">
+      <div class="brand"><span class="mark"><i class="ph ph-shield-star"></i></span> RestaurantOS <small>· Admin</small></div>
+      <div class="who"><span id="whoEmail"></span><button class="btn btn-sm" id="logoutBtn"><i class="ph ph-sign-out"></i> Log out</button></div>
+    </div>
+
+    <div class="wrap">
+      <div class="page-title">Restaurant owners</div>
+      <div class="page-sub">Create an owner account — they get an email, password and a customer URL for their restaurant.</div>
+
+      <div class="card">
+        <div class="section-title" style="margin-top:0"><i class="ph ph-plus-circle"></i> New owner</div>
+        <form id="createForm">
+          <div class="row">
+            <div class="field"><label>Restaurant name</label><input id="restaurantName" placeholder="e.g. Spice Garden" required /></div>
+            <div class="field"><label>Owner email</label><input id="ownerEmail" type="email" placeholder="owner@spicegarden.com" required /></div>
+          </div>
+          <div class="err" id="createErr"></div>
+          <button class="btn btn-primary" type="submit"><i class="ph ph-user-plus"></i> Create owner account</button>
+        </form>
+        <div id="credBox"></div>
+      </div>
+
+      <div class="section-title"><i class="ph ph-users-three"></i> All owners <span id="ownerCount" class="badge muted"></span></div>
+      <div class="list" id="ownerList"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="/admin/admin.js"></script>
+</body>
+</html>

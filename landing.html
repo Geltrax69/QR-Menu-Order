@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RestaurantOS · Scan. Order. Pay. Track. Enjoy.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+  <link rel="stylesheet" href="/assets/css/panel.css" />
+  <style>
+    .hero { text-align: center; padding: 60px 22px 26px; }
+    .hero .mark-lg { width: 64px; height: 64px; border-radius: 18px; background: var(--ig-grad); display: grid; place-items: center; color: #fff; font-size: 32px; margin: 0 auto 18px; }
+    .hero h1 { font-size: 38px; letter-spacing: -.03em; margin: 0 0 8px; }
+    .hero p { color: var(--muted); font-size: 16px; margin: 0; }
+    .cards { max-width: 880px; margin: 18px auto; padding: 0 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .entry { display: flex; gap: 14px; align-items: center; }
+    .entry .ic { width: 50px; height: 50px; border-radius: 14px; background: var(--ig-soft); color: var(--ig-4); display: grid; place-items: center; font-size: 26px; flex: 0 0 auto; }
+    .entry h3 { margin: 0 0 3px; font-size: 17px; }
+    .entry p { margin: 0; color: var(--muted); font-size: 13px; }
+    .rest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: 12px; }
+    .rest { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #fff; text-decoration: none; color: inherit; display: block; transition: transform .2s var(--ease); }
+    .rest:hover { transform: translateY(-3px); }
+    .rest img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+    .rest .b { padding: 10px 12px; } .rest .b .n { font-weight: 700; font-size: 13.5px; } .rest .b .s { color: var(--muted); font-size: 12px; }
+    @media (max-width:640px){ .cards{grid-template-columns:1fr} .hero h1{font-size:30px} }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="mark-lg"><i class="ph ph-fork-knife"></i></div>
+    <h1>RestaurantOS</h1>
+    <p>Scan. Order. Pay. Track. Enjoy.</p>
+  </div>
+
+  <div class="cards">
+    <a class="card entry" href="/admin">
+      <div class="ic"><i class="ph ph-shield-star"></i></div>
+      <div><h3>Admin panel</h3><p>Create &amp; manage restaurant owners</p></div>
+    </a>
+    <a class="card entry" href="/owner">
+      <div class="ic"><i class="ph ph-storefront"></i></div>
+      <div><h3>Owner panel</h3><p>Manage your menu, images &amp; tables</p></div>
+    </a>
+  </div>
+
+  <div class="wrap" style="padding-top:8px">
+    <div class="section-title"><i class="ph ph-bowl-food"></i> Live restaurants</div>
+    <div class="rest-grid" id="restGrid"><div class="empty-box">Loading…</div></div>
+  </div>
+
+  <script>
+    fetch("/api/restaurants").then((r) => r.json()).then(({ restaurants }) => {
+      const g = document.getElementById("restGrid");
+      if (!restaurants.length) { g.innerHTML = `<div class="empty-box">No restaurants yet</div>`; return; }
+      g.innerHTML = restaurants.map((r) => `
+        <a class="rest" href="/r/${r.slug}">
+          <img src="${r.logo}" alt="${r.name}"/>
+          <div class="b"><div class="n">${r.name}</div><div class="s">${r.items} dishes</div></div>
+        </a>`).join("");
+    });
+  </script>
+</body>
+</html>

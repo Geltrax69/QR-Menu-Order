@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Tandoori Tales · Scan. Order. Pay. Track. Enjoy.</title>
+
+  <!-- Fonts: Plus Jakarta Sans (premium grotesk, not Inter) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Phosphor light icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+
+  <!-- GSAP for scroll motion -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <link rel="stylesheet" href="/assets/css/app.css" />
+</head>
+<body>
+  <div class="app" id="app">
+
+    <!-- ============ TOP BAR ============ -->
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark"><i class="ph ph-fork-knife"></i></span>
+        <span id="brandTitle">tandoori<b style="font-weight:800">tales</b></span>
+      </div>
+      <div class="icons">
+        <button class="icon-btn" data-action="assist" aria-label="Call waiter">
+          <i class="ph ph-hand-waving"></i>
+        </button>
+        <button class="icon-btn" data-action="orders" aria-label="Orders">
+          <i class="ph ph-bell"></i>
+        </button>
+        <button class="icon-btn" data-tab="cart" aria-label="Cart">
+          <i class="ph ph-bag"></i>
+          <span class="dot-badge" id="cartBadgeTop">0</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ============ SCROLLING VIEWS ============ -->
+    <main class="scroll" id="scroll">
+      <section class="view" id="view-home"></section>
+      <section class="view" id="view-search" hidden></section>
+      <section class="view" id="view-cart" hidden></section>
+      <section class="view" id="view-orders" hidden></section>
+      <section class="view" id="view-profile" hidden></section>
+    </main>
+
+    <!-- ============ STICKY CHECKOUT (cart only) ============ -->
+    <div class="checkout-bar" id="checkoutBar" hidden></div>
+
+    <!-- ============ BOTTOM TAB BAR ============ -->
+    <nav class="tabbar" id="tabbar">
+      <button class="tab active" data-tab="home" aria-label="Home">
+        <i class="ph ph-house"></i><i class="ph-fill ph-house"></i>
+      </button>
+      <button class="tab" data-tab="search" aria-label="Explore">
+        <i class="ph ph-magnifying-glass"></i><i class="ph-fill ph-magnifying-glass"></i>
+      </button>
+      <button class="tab" data-tab="cart" aria-label="Cart">
+        <i class="ph ph-bag"></i><i class="ph-fill ph-bag"></i>
+        <span class="dot-badge" id="cartBadgeTab">0</span>
+      </button>
+      <button class="tab" data-tab="orders" aria-label="Orders">
+        <i class="ph ph-receipt"></i><i class="ph-fill ph-receipt"></i>
+      </button>
+      <button class="tab" data-tab="profile" aria-label="Profile">
+        <span class="tab-ava" id="tabAva"></span>
+      </button>
+    </nav>
+
+    <!-- ============ SHEET (detail / assist / checkout) ============ -->
+    <div class="sheet-scrim" id="scrim"></div>
+    <div class="sheet" id="sheet">
+      <div class="sheet-grab"></div>
+      <div class="sheet-pad" id="sheetBody"></div>
+    </div>
+
+    <!-- ============ TOAST ============ -->
+    <div class="toast" id="toast"><i class="ph ph-check-circle"></i><span id="toastMsg"></span></div>
+  </div>
+
+  <script src="/assets/js/data.js"></script>
+  <script src="/assets/js/app.js"></script>
+</body>
+</html>
