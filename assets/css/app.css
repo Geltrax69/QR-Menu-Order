@@ -29,7 +29,7 @@
   --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
-  --tab-h: 64px;
+  --tab-h: 60px;
   --nav-h: 56px;
 }
 
@@ -114,7 +114,7 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
 .scroll {
   flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden;
   scrollbar-width: none; -webkit-overflow-scrolling: touch;
-  padding-bottom: calc(var(--tab-h) + 24px);
+  padding-bottom: calc(var(--tab-h) + env(safe-area-inset-bottom) + 24px);
 }
 .scroll::-webkit-scrollbar { display: none; }
 
@@ -287,27 +287,39 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
 /* ---------- Bottom tab bar ---------- */
 .tabbar {
   position: absolute; bottom: 0; left: 0; right: 0; z-index: 45;
-  height: var(--tab-h);
-  display: flex; align-items: center; justify-content: space-around;
+  /* fixed interactive row + safe-area space below (home indicator) */
+  height: calc(var(--tab-h) + env(safe-area-inset-bottom));
   padding-bottom: env(safe-area-inset-bottom);
-  background: rgba(255,255,255,.92); backdrop-filter: saturate(160%) blur(16px);
-  border-top: 1px solid var(--line);
+  display: flex; align-items: stretch; justify-content: space-around;
+  background: rgba(255,255,255,.86);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-top: 1px solid rgba(16,16,20,.07);
+  box-shadow: 0 -10px 28px -20px rgba(16,16,20,.3);
 }
 .tab {
-  position: relative; width: 56px; height: 100%; display: grid; place-items: center;
-  font-size: 27px; color: var(--ink);
+  position: relative; flex: 1; max-width: 88px; height: var(--tab-h);
+  display: grid; place-items: center; font-size: 25px; color: var(--ink);
   transition: transform .25s var(--ease-spring);
 }
-.tab:active { transform: scale(.85); }
+.tab:active { transform: scale(.86); }
+/* gradient active indicator at the top edge of the selected tab */
+.tab::before {
+  content: ""; position: absolute; top: -1px; left: 50%;
+  width: 22px; height: 3px; border-radius: 0 0 4px 4px; background: var(--ig-grad);
+  transform: translateX(-50%) scaleX(0); transform-origin: center;
+  transition: transform .3s var(--ease-spring);
+}
+.tab.active::before { transform: translateX(-50%) scaleX(1); }
 .tab .ph-fill { display: none; }
 .tab.active .ph-fill { display: block; }
 .tab.active .ph:not(.ph-fill) { display: none; }
 .tab .tab-ava {
-  width: 27px; height: 27px; border-radius: 999px; background-size: cover; background-position: center;
-  border: 2px solid transparent;
+  width: 26px; height: 26px; border-radius: 999px; background-size: cover; background-position: center;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 2px transparent;
 }
-.tab.active .tab-ava { border-color: var(--ink); }
-.tab .dot-badge { top: 8px; right: 10px; }
+.tab.active .tab-ava { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--ig-3); }
+.tab .dot-badge { top: 9px; right: 12px; }
 
 /* ---------- Generic page headers ---------- */
 .page { padding: 0; }
@@ -397,7 +409,7 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
 
 /* sticky checkout bar */
 .checkout-bar {
-  position: absolute; left: 0; right: 0; bottom: var(--tab-h); z-index: 44; padding: 12px var(--pad) 14px;
+  position: absolute; left: 0; right: 0; bottom: calc(var(--tab-h) + env(safe-area-inset-bottom)); z-index: 44; padding: 12px var(--pad) 14px;
   background: rgba(255,255,255,.95); backdrop-filter: blur(12px); border-top: 1px solid var(--line);
 }
 .btn-primary {
@@ -518,7 +530,7 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
 
 /* ---------- Toast ---------- */
 .toast {
-  position: absolute; left: 50%; bottom: calc(var(--tab-h) + 18px); transform: translate(-50%, 20px);
+  position: absolute; left: 50%; bottom: calc(var(--tab-h) + env(safe-area-inset-bottom) + 18px); transform: translate(-50%, 20px);
   z-index: 70; background: var(--ink); color: #fff; padding: 12px 18px; border-radius: 14px;
   font-size: 13.5px; font-weight: 600; display: flex; align-items: center; gap: 9px;
   opacity: 0; pointer-events: none; transition: opacity .3s, transform .35s var(--ease-spring);
