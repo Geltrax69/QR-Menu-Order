@@ -8,6 +8,7 @@
    =========================================================== */
 const express = require("express");
 const path = require("path");
+const os = require("os");
 const db = require("./server/db");
 const { hashPassword, verifyPassword, newToken, readablePassword } = require("./server/auth");
 
@@ -341,10 +342,33 @@ app.get("/owner", (req, res) => res.sendFile(path.join(ROOT, "owner", "index.htm
 app.get("/r/:slug", (req, res) => res.sendFile(path.join(ROOT, "index.html")));
 app.get("/", (req, res) => res.sendFile(path.join(ROOT, "landing.html")));
 
+/* Pick the machine's first non-internal IPv4 (the LAN IP a phone/simulator
+   on the same Wi-Fi can reach). Returns null if offline. */
+function lanIP() {
+  const ifaces = os.networkInterfaces();
+  // Prefer common Wi-Fi/Ethernet interfaces, then fall back to any.
+  const order = ["en0", "en1", "eth0", "wlan0"];
+  const pick = (name) =>
+    (ifaces[name] || []).find((a) => a.family === "IPv4" && !a.internal);
+  for (const name of order) {
+    const a = pick(name);
+    if (a) return a.address;
+  }
+  for (const name of Object.keys(ifaces)) {
+    const a = pick(name);
+    if (a) return a.address;
+  }
+  return null;
+}
+
 app.listen(PORT, () => {
   db.load(); // trigger first-run seed
-  console.log(`\n  RestaurantOS running → http://localhost:${PORT}`);
-  console.log(`  Admin   : http://localhost:${PORT}/admin   (admin@restaurantos.app / admin123)`);
-  console.log(`  Owner   : http://localhost:${PORT}/owner   (owner@tandoori.app / owner123)`);
-  console.log(`  Customer: http://localhost:${PORT}/r/tandoori-tales\n`);
+  const ip = lanIP();
+  console.log(`\n  RestaurantOS running`);
+  console.log(`  Local    → http://localhost:${PORT}`);
+  if (ip) console.log(`  Network  → http://${ip}:${PORT}   (open this on your phone / simulator)`);
+  console.log("");
+  console.log(`  Admin    : /admin   (admin@restaurantos.app / admin123)`);
+  console.log(`  Owner    : /owner   (owner@tandoori.app / owner123)`);
+  console.log(`  Customer : /r/tandoori-tales   (add ?t=12 for a table)\n`);
 });
