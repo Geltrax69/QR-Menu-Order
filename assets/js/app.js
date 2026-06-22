@@ -32,8 +32,9 @@ const cartSubtotal = () =>
 /* ---------------- Badges ---------------- */
 function refreshBadges() {
   const n = cartCount();
-  ["cartBadgeTop", "cartBadgeTab"].forEach((id) => {
+  ["cartBadgeTab"].forEach((id) => {
     const el = $("#" + id);
+    if (!el) return;
     el.textContent = n;
     el.classList.toggle("show", n > 0);
   });
@@ -62,18 +63,6 @@ const BADGE = {
    HOME FEED
    ========================================================= */
 function renderHome() {
-  const storyImg = (s) => s.image || img(s.seed || "dish", 200, 200);
-  const stories = STORIES.map(
-    (s) => `
-    <button class="story" data-story="${s.id}">
-      <span class="story-ring">
-        <span style="background-image:url('${storyImg(s)}')"></span>
-      </span>
-      ${s.live ? `<span class="story-live">Live</span>` : ""}
-      <span class="story-label">${s.label}</span>
-    </button>`
-  ).join("");
-
   const banner = BANNERS[0];
   const bannerHtml = banner
     ? `
@@ -86,20 +75,22 @@ function renderHome() {
     </div>`
     : "";
 
-  const chips = CATEGORIES.map(
-    (c) => `<button class="chip ${c.id === state.cat ? "active" : ""}" data-cat="${c.id}">${c.label}</button>`
-  ).join("");
-
   const items = MENU.filter((m) => state.cat === "all" || m.cat === state.cat);
   const feed = items.map(postCard).join("");
 
   $("#view-home").innerHTML = `
-    <div class="stories">${stories}</div>
     ${bannerHtml}
-    <div class="chips">${chips}</div>
     <div class="feed">${feed || emptyState("ph-cooking-pot", "Nothing here yet", "Try another category.")}</div>
   `;
   animateReveal("#view-home");
+  renderCatBar();
+}
+
+/* Category chips now live in a fixed bar above the bottom nav (home only). */
+function renderCatBar() {
+  $("#catBar").innerHTML = CATEGORIES.map(
+    (c) => `<button class="chip ${c.id === state.cat ? "active" : ""}" data-cat="${c.id}">${c.label}</button>`
+  ).join("");
 }
 
 /* The add-to-cart control. Before adding it's a single "Add" pill;
@@ -696,7 +687,12 @@ function switchTab(tab) {
   state.tab = tab;
   $$(".view").forEach((v) => (v.hidden = v.id !== "view-" + tab));
   $$(".tab").forEach((t) => t.classList.toggle("active", t.dataset.tab === tab));
+  // profile now lives in the top bar — reflect its active state there
+  $("#topProfileBtn").classList.toggle("active", tab === "profile");
   $("#checkoutBar").hidden = tab !== "cart";
+  // category bar floats above the nav, on the home tab only
+  $("#catBar").hidden = tab !== "home";
+  $("#scroll").classList.toggle("has-catbar", tab === "home");
   RENDERERS[tab]();
   $("#scroll").scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
 }
@@ -764,9 +760,9 @@ function bumpCart() {
   if (reduceMotion) return;
   // Pure CSS pop — no inline transform residue, so the badge's hidden
   // state (CSS scale 0 when not `.show`) is never left stuck visible.
-  ["cartBadgeTab", "cartBadgeTop"].forEach((id) => {
+  ["cartBadgeTab"].forEach((id) => {
     const el = document.getElementById(id);
-    if (!el.classList.contains("show")) return;
+    if (!el || !el.classList.contains("show")) return;
     el.classList.remove("pop");
     void el.offsetWidth; // restart the animation
     el.classList.add("pop");
@@ -898,7 +894,9 @@ function applyBrand() {
     }
   }
   applyBrand();
-  $("#tabAva").style.backgroundImage = `url('${img("guestava", 120, 120)}')`;
+  $("#topAva").style.backgroundImage = `url('${img("guestava", 120, 120)}')`;
   refreshBadges();
+  $("#catBar").hidden = false;
+  $("#scroll").classList.add("has-catbar");
   renderHome();
 })();

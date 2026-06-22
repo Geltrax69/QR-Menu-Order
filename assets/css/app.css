@@ -100,6 +100,14 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
   position: relative; transition: transform .25s var(--ease-spring), background .25s;
 }
 .icon-btn:active { transform: scale(.88); background: var(--surface-2); }
+/* profile avatar in the top bar (replaces the old cart icon) */
+.topbar-ava { background: none; }
+.top-ava {
+  width: 30px; height: 30px; border-radius: 999px;
+  background-size: cover; background-position: center; background-color: var(--surface-2);
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--ig-3);
+}
+.topbar-ava.active .top-ava { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--ig-4); }
 .dot-badge {
   position: absolute; top: 6px; right: 6px; min-width: 17px; height: 17px;
   padding: 0 4px; border-radius: 999px; background: var(--ig-3); color: #fff;
@@ -185,6 +193,23 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
   background: var(--ink); color: #fff; border-color: var(--ink);
   box-shadow: 0 8px 20px -10px rgba(10,10,15,.6); transform: translateY(-1px);
 }
+
+/* ---------- Category bar (home only, floats above the bottom nav) ---------- */
+.cat-bar {
+  position: absolute; left: 0; right: 0; z-index: 44;
+  bottom: calc(var(--tab-h) + env(safe-area-inset-bottom));
+  display: flex; gap: 8px; padding: 10px var(--pad);
+  overflow-x: auto; scrollbar-width: none;
+  background: rgba(255,255,255,.92);
+  backdrop-filter: saturate(180%) blur(18px); -webkit-backdrop-filter: saturate(180%) blur(18px);
+  border-top: 1px solid rgba(16,16,20,.07);
+  box-shadow: 0 -8px 22px -18px rgba(16,16,20,.28);
+  scroll-snap-type: x proximity; scroll-padding-left: var(--pad);
+}
+.cat-bar::-webkit-scrollbar { display: none; }
+.cat-bar .chip { scroll-snap-align: start; }
+/* when the category bar is showing (home), give the feed room to clear it */
+.scroll.has-catbar { padding-bottom: calc(var(--tab-h) + env(safe-area-inset-bottom) + 80px); }
 
 /* ---------- Feed post (menu item) ---------- */
 .feed { padding: 4px 0 0; }

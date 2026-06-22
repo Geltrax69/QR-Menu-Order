@@ -36,9 +36,8 @@
         <button class="icon-btn" data-action="orders" aria-label="Orders">
           <i class="ph ph-bell"></i>
         </button>
-        <button class="icon-btn" data-tab="cart" aria-label="Cart">
-          <i class="ph ph-bag"></i>
-          <span class="dot-badge" id="cartBadgeTop">0</span>
+        <button class="icon-btn topbar-ava" id="topProfileBtn" data-tab="profile" aria-label="Profile">
+          <span class="top-ava" id="topAva"></span>
         </button>
       </div>
     </header>
@@ -55,6 +54,9 @@
     <!-- ============ STICKY CHECKOUT (cart only) ============ -->
     <div class="checkout-bar" id="checkoutBar" hidden></div>
 
+    <!-- ============ CATEGORY BAR (home only, sits above the nav) ============ -->
+    <div class="cat-bar" id="catBar" hidden></div>
+
     <!-- ============ BOTTOM TAB BAR ============ -->
     <nav class="tabbar" id="tabbar">
       <button class="tab active" data-tab="home" aria-label="Home">
@@ -69,9 +71,6 @@
       </button>
       <button class="tab" data-tab="orders" aria-label="Orders">
         <i class="ph ph-receipt"></i><i class="ph-fill ph-receipt"></i>
-      </button>
-      <button class="tab" data-tab="profile" aria-label="Profile">
-        <span class="tab-ava" id="tabAva"></span>
       </button>
     </nav>
 
