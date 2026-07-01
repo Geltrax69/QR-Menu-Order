@@ -6,8 +6,32 @@
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const img = (seed, w = 800, h = 1000) => `https://picsum.photos/seed/${seed}/${w}/${h}`;
-// Menu image: prefer an owner-supplied URL, else fall back to a seeded placeholder.
-const mediaUrl = (m, w = 800, h = 1000) => (m && m.image) || img((m && m.seed) || "dish", w, h);
+// Real dish photos (TheMealDB, stable URLs) matched by keyword in the name.
+const MEAL = (id) => `https://www.themealdb.com/images/media/meals/${id}.jpg`;
+const FOOD_BY_KW = [
+  [/naan|bread|fries|paratha|roti|samosa|pakora|wrap/i, null], // no stock match -> keyword photo
+  [/pizza|margherita|calzone/i, MEAL("x0lk931587671540")],
+  [/burger|sandwich|slider/i, MEAL("lgmnff1763789847")],
+  [/biryani|pulao|fried rice|rice|pilaf/i, MEAL("xrttsx1487339558")],
+  [/paneer|tikka|tandoori/i, MEAL("xxpqsy1511452222")],
+  [/brownie|cake|dessert|chocolate|jamun|kheer|halwa|ice ?cream|pudding/i, MEAL("yypvst1511386427")],
+  [/soda|lassi|cooler|juice|drink|shake|mojito|lemonade|coffee|tea|beverage|mocktail/i, MEAL("0sd7ac1764787957")],
+  [/chicken|curry|masala|korma|makhani|gravy|\bdal\b|mutton|lamb|fish/i, MEAL("sstssx1487349585")],
+];
+// Stable per-name lock so a dish keeps the same fallback photo across re-renders.
+const foodLock = (s) => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h % 100000; };
+const foodImg = (name, w = 800, h = 1000) => {
+  const tags = String(name || "food").replace(/[^a-z0-9 ]/gi, "").trim().split(/\s+/).slice(0, 3).join(",") || "food";
+  return `https://loremflickr.com/${w}/${h}/${encodeURIComponent(tags)},food?lock=${foodLock(name)}`;
+};
+// Menu image: honor a real owner URL; else a keyword-matched dish photo; else a keyword search.
+const mediaUrl = (m, w = 800, h = 1000) => {
+  const url = m && m.image;
+  if (url && !url.includes("picsum.photos")) return url;
+  const name = (m && m.name) || "";
+  for (const [re, photo] of FOOD_BY_KW) if (re.test(name)) return photo || foodImg(name, w, h);
+  return foodImg(name, w, h);
+};
 const inr = (n) => "₹" + n.toLocaleString("en-IN");
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -67,7 +91,7 @@ function renderHome() {
   const bannerHtml = banner
     ? `
     <div class="banner reveal" data-tab="search">
-      <img src="${banner.image || img(banner.seed, 800, 400)}" alt="" loading="lazy"/>
+      <img src="${banner.image && !banner.image.includes("picsum.photos") ? banner.image : mediaUrl({ name: banner.title }, 800, 400)}" alt="" loading="lazy"/>
       <div class="banner-body">
         <span class="banner-tag">${banner.tag}</span>
         <div class="banner-title">${banner.title}</div>
