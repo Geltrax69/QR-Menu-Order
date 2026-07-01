@@ -109,7 +109,7 @@ function renderMenu() {
     const cat = R.categories.find((c) => c.id === m.cat);
     return `
     <div class="item-card" data-edit="${m.id}" style="cursor:pointer">
-      <img class="thumb" src="${esc(m.image)}" alt="${esc(m.name)}" onerror="this.style.opacity=.25"/>
+      <img class="thumb" src="${mediaUrl(m, 400, 300)}" alt="${esc(m.name)}" onerror="this.style.opacity=.25"/>
       <div class="body">
         <div class="t"><span class="veg ${m.veg ? "" : "no"}"></span> ${esc(m.name)}</div>
         <div class="d">${esc(m.desc || "")}</div>
